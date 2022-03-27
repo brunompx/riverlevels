@@ -1,3 +1,7 @@
 from django.contrib import admin
+from levels.models import Level
 
-# Register your models here.
+class LevelAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Level, LevelAdmin)

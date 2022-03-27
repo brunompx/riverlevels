@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import json
 import os
 import sys
+from levels.models import Level
 
 now = datetime.now()
 timeStart = (now + timedelta(-10)).strftime("%Y-%m-%d")
@@ -56,9 +57,6 @@ def update_data():
         cal_name = resp_json['responseHeader']['cal_name']
         label = str(corid) + "-" + cal_name
         forecast_date = resp_json['responseHeader']['forecastdate'][:-9]
-        create_date = now
-        #value_date = models.DateField
-        #value = models.DecimalField(max_digits=5, decimal_places=4)
 
         resp_data = resp_json['data']
         clean_data = {}
@@ -67,5 +65,20 @@ def update_data():
         
         print(clean_data)
 
+        for k, v in enumerate(clean_data):
+            level = Level()
+            level.cal_name = cal_name
+            level.calid = calid
+            level.corid = corid
+            level.estacion_id = estacion_id
+            level.model_name = model_name
+            level.label = label
+            level.forecast_date = convert_date(forecast_date)
+            level.value_date = convert_date(k)
+            level.value = v
+            level.save()
+
         #save to file
-        
+
+def convert_date(strD: str) -> datetime:
+    return datetime.strptime(strD, "%Y-%m-%d").date
