@@ -4,6 +4,7 @@ import json
 import os
 import sys
 from levels.models import Level
+import warnings
 
 now = datetime.now()
 timeStart = (now + timedelta(-10)).strftime("%Y-%m-%d")
@@ -34,7 +35,7 @@ def build_params(seriesId, siteCode, calId):
     return param_str
 
 def read_models():
-    with open(os.path.join(sys.path[0] + '\dataUpdater', 'models.json'), 'r') as f:
+    with open(os.path.join(sys.path[0]+'/dataUpdater', 'models.json'), 'r') as f:
         return json.load(f)
 
 def update_data():
@@ -56,7 +57,7 @@ def update_data():
         model_name = resp_json['responseHeader']['model_name']
         cal_name = resp_json['responseHeader']['cal_name']
         label = str(corid) + "-" + cal_name
-        forecast_date = resp_json['responseHeader']['forecastdate'][:-9]
+        forecast_date = convert_date(resp_json['responseHeader']['forecastdate'][:-9])
 
         resp_data = resp_json['data']
         clean_data = {}
@@ -65,7 +66,7 @@ def update_data():
         
         print(clean_data)
 
-        for k, v in enumerate(clean_data):
+        for k, v in clean_data.items():
             level = Level()
             level.cal_name = cal_name
             level.calid = calid
@@ -73,7 +74,7 @@ def update_data():
             level.estacion_id = estacion_id
             level.model_name = model_name
             level.label = label
-            level.forecast_date = convert_date(forecast_date)
+            level.forecast_date = forecast_date
             level.value_date = convert_date(k)
             level.value = v
             level.save()
@@ -82,3 +83,11 @@ def update_data():
 
 def convert_date(strD: str) -> datetime:
     return datetime.strptime(strD, "%Y-%m-%d").date
+
+def main():
+    if not sys.warnoptions:
+        warnings.simplefilter("ignore")
+    update_data()
+
+if __name__ == '__main__':
+    main()
