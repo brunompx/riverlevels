@@ -6,5 +6,5 @@ class LevelsConfig(AppConfig):
     name = 'levels'
 
     def ready(self):
-        from dataUpdater import updater
-        #updater.start()
+        from dataUpdater import scheduler
+        scheduler.start()
