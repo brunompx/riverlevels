@@ -7,4 +7,4 @@ class LevelsConfig(AppConfig):
 
     def ready(self):
         from dataUpdater import scheduler
-        scheduler.start()
+        #scheduler.start()
