@@ -9,6 +9,7 @@ from dataUpdater import api_client
 
 def update_data():
     if Level.objects.exists():
+        print("-----------DELETE--------------")
         Level.objects.all().delete()
 
     json_content = read_forecast_models()
@@ -20,6 +21,7 @@ def update_data():
         resp_header = resp_json['responseHeader']
         resp_data = resp_json['data']
         
+        #Keep only one value per date while removing all hourly values and using a Set.
         clean_data = {}
         for o in resp_data:
             clean_data[o['timeend'][:-9]] = o['valor']

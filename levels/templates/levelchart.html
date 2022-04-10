@@ -16,8 +16,8 @@
                     yAxisID: 'oeoe',
                     backgroundColor: 'transparent',
                     spanGaps: true,
-                    // data: [{% for v in dataset.values_dic.values%}{{v}},{% endfor %}]
-                    data: [{% for v in dataset.values_list%}{{v}},{% endfor %}]
+                    borderColor: getRandomColor(),
+                    data: [{% for v in dataset.values_dic.values%}{{v|default_if_none:''}},{% endfor %}]
                 },
                 {% endfor %}
             ]
@@ -30,6 +30,14 @@
 		    }
         }
     });
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF'.split('');
+        var color = '#';
+        for (var i = 0; i < 6; i++ ) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
 </script>
 
 
